@@ -2,29 +2,46 @@
 #define BlockMap_hh__
 
 #include <map>
-
-#include "Block.hh"
+#include <vector>
+#include <utility>
 
 class BlockMap
 {
 public:
-  template <class InputIterator> BlockMap( InputIterator begin, InputIterator end )
-  {
-    for( InputIterator it = begin; it != end; ++it )
-    {
-      const Block& block = *it;
 
-      _mapBegin[block.begin] = block.end;
-      _mapEnd[block.end]     = block.begin;
-    }
+  /**
+    Creates a new block map from a vector of Brainf*ck commands.
+
+    @param commands Vector of commands
+  */
+  
+  BlockMap( const std::vector<char>& commands );
+
+  /**
+    Creates a new block map from an arbitrary range of commands.
+
+    @param begin Input iterator to begin of range
+    @param end   Input iterator to end of range
+  */
+
+  template <class InputIterator> BlockMap( InputIterator begin, InputIterator end )
+    : BlockMap( std::vector<char>( begin, end ) )
+  {
   }
 
-  std::size_t getBegin( std::size_t address ) const;
-  std::size_t getEnd( std::size_t address ) const;
+  /** @returns The matching address for the start or end of a block */
+  std::size_t getMatchingAddress( std::size_t address ) const;
 
 private:
-  std::map<std::size_t, std::size_t> _mapBegin;
-  std::map<std::size_t, std::size_t> _mapEnd;
+
+  /**
+    Maps matching addresses to each other. Each block [a,b] in the program will
+    result in the entries a->b and b->a being made.
+
+    This is not optimal and could be solved more easily with Boost's bimap.
+  */
+
+  std::map<std::size_t, std::size_t> _addressMap;
 };
 
 #endif
