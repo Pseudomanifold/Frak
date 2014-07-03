@@ -1,3 +1,10 @@
+/*
+ * Frak --- A brainf*ck interpreter
+ * Copyright (C) Bastian Rieck <bastian@rieck.ru>
+ *
+ * See LICENSE for details.
+ */
+
 #include <algorithm>
 #include <fstream>
 #include <iostream>
