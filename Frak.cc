@@ -34,24 +34,27 @@ bool isValid( char command )
 }
 
 /**
-  Parse a given input file an stores a stream of valid Brainf*ck commands in an
-  output iterator.
+  Parse a given input file an stores a stream of valid Brainf*ck commands in a
+  vector.
 
-  @param[in]  filename Input filename
-  @param[out] result   Output iterator for storing the commands
+  @param filename Input filename
+  @returns Vector of commands
 */
 
-template <class OutputIterator> void parse( const std::string& filename,
-                                            OutputIterator result )
+std::vector<char>parse( const std::string& filename )
 {
   std::ifstream in( filename );
   if( !in )
     throw std::runtime_error( "Unable to open input file" );
 
+  std::vector<char> commands;
+
   std::copy_if( std::istreambuf_iterator<char>( in ),
                 std::istreambuf_iterator<char>(),
-                result,
+                std::back_inserter( commands ),
                 isValid );
+
+  return commands;
 }
 
 /**
@@ -129,7 +132,7 @@ void usage()
 
 int main(int argc, char* argv[])
 {
-  if( argc == 1 )
+  if( argc != 2 )
   {
     usage();
     return -1;
@@ -137,11 +140,7 @@ int main(int argc, char* argv[])
 
   std::string inputFilename = argv[1];
 
-  std::vector<char> commands;
-
-  Parser::parse( inputFilename,
-                 std::back_inserter( commands ) );
-
+  std::vector<char> commands                    = Parser::parse( inputFilename );
   std::map<std::size_t, std::size_t> addressMap = Parser::getBlockAddresses( commands );
 
   std::size_t ip = 0;
