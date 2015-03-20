@@ -22,7 +22,7 @@ namespace Parser
 /**
   Checks whether a given command is a valid Brainf*ck command. This auxiliary
   function is used to parse input files.
-  
+
   @param c Character whose validity is going to be determined
   @returns true if \c c is a valid command
 */
@@ -175,7 +175,12 @@ int main(int argc, char* argv[])
       if( std::cin >> c )
         memory.at( dp ) = c;
       else
-        throw std::runtime_error( "Unable to obtain input" );
+      {
+        if( std::cin.eof() )
+          return 0;
+        else
+          throw std::runtime_error( "Unable to obtain input" );
+      }
     }
     else if( command == '[' )
     {
